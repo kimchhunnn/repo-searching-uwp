@@ -9,6 +9,8 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+        <Button Content="Click to here something" Margin="0,107,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Click="Button_Click"/>
+        <TextBox HorizontalAlignment="Center" Margin="0,62,0,0" Text="" PlaceholderText="Enter a keyword here ... " TextWrapping="Wrap" VerticalAlignment="Top" Width="619"/>
+        <TextBlock HorizontalAlignment="Center" Margin="0,32,0,0" Text="GitHub Repository Search" TextWrapping="Wrap" VerticalAlignment="Top"/>
     </Grid>
 </Page>
