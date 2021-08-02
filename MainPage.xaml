@@ -6,11 +6,33 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="White"
+    Foreground="Black"
+   >
 
     <Grid>
-        <Button Content="Click to here something" Margin="0,107,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Click="Button_Click"/>
-        <TextBox HorizontalAlignment="Center" Margin="0,62,0,0" Text="" PlaceholderText="Enter a keyword here ... " TextWrapping="Wrap" VerticalAlignment="Top" Width="619"/>
         <TextBlock HorizontalAlignment="Center" Margin="0,32,0,0" Text="GitHub Repository Search" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="152,56,0,0" Text="" PlaceholderText="Enter a keyword here ... " TextWrapping="Wrap" VerticalAlignment="Top" Width="1189" BorderBrush="Black" Background="White" Foreground="Black"/>
+        <TextBlock HorizontalAlignment="Left" Margin="152,110,0,0" Text="Top 20 out of 2,000 results" TextWrapping="Wrap" VerticalAlignment="Top" Width="1187" Height="26" />
+        <ListView Margin="152,146,159,49" ItemsSource="{x:Bind Repositories}" >
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:Repository">
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Image Source="Assets/icon-folder.svg" Width="15" Height="15" HorizontalAlignment="Left" VerticalAlignment="Center" RequestedTheme="Dark"/>
+                            <TextBlock Margin="5,0,0,4" Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind Name}" Foreground="Black" FontSize="14" />
+                        </Grid>
+                        <TextBlock Text="{x:Bind Description}" Foreground="Black" FontSize="14" />
+                        <TextBlock Text="{x:Bind Stargazers}" Foreground="Black" FontSize="14" />
+                        <TextBlock Text="{x:Bind Language}" Foreground="Black" FontSize="14" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
     </Grid>
 </Page>

@@ -27,13 +27,31 @@ namespace repo_searching_uwp
             this.InitializeComponent();
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        public Repository[] Repositories { get; } =
+            new Repository[]
         {
-            MediaElement mediaElement = new MediaElement();
-            var synth = new Windows.Media.SpeechSynthesis.SpeechSynthesizer();
-            Windows.Media.SpeechSynthesis.SpeechSynthesisStream stream = await synth.SynthesizeTextToStreamAsync("Hello, World. Welcome to UWP");
-            mediaElement.SetSource(stream, stream.ContentType);
-            mediaElement.Play();
+            ("Apricot", "AAAAAAA", "React Calendar", 1622, "JavaScript"),
+            ("Banana", "BBBBBB", "React Calendar", 2000, "JavaScript"),
+            ("Cherry", "CCCCCC", "React Calendar", 2099, "JavaScript"),
+            ("Date Palm", "DDDDDD", "React Calendar", 1299, "JavaScript"),
+            ("Elephant Apple", "EEEEEE", "React Calendar", 210, "JavaScript"),
+            ("Elephant Apple", "EEEEEE", "React Calendar", 30, "JavaScript"),
+        };
+    }
+
+    public class Repository
+    {
+        public string Name { get; set; }
+        public string HtmlUrl { get; set; }
+        public string Description { get; set; }
+        public int Stargazers { get; set; }
+        public string Language { get; set; }
+
+
+
+        public static implicit operator Repository((string Name, string HtmlUrl, string Description, int Stargazers, string Language) info)
+        {
+            return new Repository { Name = info.Name, HtmlUrl = info.HtmlUrl, Description = info.Description, Stargazers = info.Stargazers, Language = info.Language };
         }
     }
 }
