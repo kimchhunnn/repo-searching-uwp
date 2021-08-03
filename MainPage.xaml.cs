@@ -25,6 +25,12 @@ namespace repo_searching_uwp
         public MainPage()
         {
             this.InitializeComponent();
+
+            TextBlock emptyMessageTextBLock = this.FindName("EmptyMsg") as TextBlock;
+            emptyMessageTextBLock.Visibility = Visibility.Collapsed;
+
+            TextBlock resultMsg = this.FindName("ResultMsg") as TextBlock;
+            resultMsg.Text = "6 Results";
         }
 
         public Repository[] Repositories { get; } =

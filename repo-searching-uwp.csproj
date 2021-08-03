@@ -134,6 +134,7 @@
     <Content Include="Assets\icon-search.svg" />
     <Content Include="Assets\icon-star.svg" />
     <Content Include="Assets\placeholder.png" />
+    <Content Include="Assets\star.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
