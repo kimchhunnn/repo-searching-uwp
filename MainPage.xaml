@@ -35,6 +35,7 @@
                 <Image Source="Assets/icon-search.svg" Margin="15,0,15,0" Width="15" Height="15" HorizontalAlignment="Left" VerticalAlignment="Center" />
                 <TextBox 
                     Text=""
+                    x:Name="Keyword"
                     BorderThickness="0"
                     PlaceholderText="Enter a keyword here ... "
                     Width="1139" Height="46"
@@ -44,7 +45,7 @@
                     Padding="15,12,10,10"
                     FontSize="16"
                     VerticalContentAlignment="Center"
-                    TextWrapping="Wrap">
+                    TextWrapping="Wrap" >
 
                     <TextBox.Resources>
                         <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="Transparent"/>
@@ -79,9 +80,9 @@
             Width="1187" Height="26" />
 
         <!-- Result List -->
-        <ListView x:Name="ResultList" Margin="0,185,0,49" Visibility="Visible" HorizontalAlignment="Center" Width="1207 " ItemsSource="{x:Bind Repositories}" Padding="0">
+        <ListView x:Name="ResultList" Margin="0,185,0,49" Visibility="Visible" HorizontalAlignment="Center" Width="1207 " Padding="0">
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="local:Repository">
+                <DataTemplate x:DataType="local:Repo">
                     <Border BorderBrush="#FF000000" BorderThickness="1" CornerRadius="4" Margin="0,5,0,5">
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,8,0,5">
                             <Grid>
@@ -95,15 +96,15 @@
                                     Width="15" Height="15"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center" />
-                                
+
                                 <TextBlock
                                     Margin="5,0,0,3"
                                     Grid.Column="1"
                                     VerticalAlignment="Bottom"
-                                    Text="{x:Bind Name}" />
-                                
+                                    Text="{x:Bind full_name}" />
+
                             </Grid>
-                            <TextBlock Text="{x:Bind Description}" />
+                            <TextBlock Text="{x:Bind description}" />
                             <RichTextBlock Margin="0,2,0,5">
                                 <Paragraph>
                                     <InlineUIContainer>
@@ -113,7 +114,7 @@
                                                     <Image Source="Assets/star.png" Height="15" Width="15"/>
                                                 </InlineUIContainer>
                                                 <InlineUIContainer>
-                                                    <TextBlock Text="{x:Bind Stargazers}" VerticalAlignment="Center" />
+                                                    <TextBlock Text="{x:Bind stargazers_count.ToString() }" VerticalAlignment="Center" />
                                                 </InlineUIContainer>
                                             </Paragraph>
                                         </RichTextBlock>
@@ -121,14 +122,14 @@
                                     <InlineUIContainer >
                                         <Border BorderBrush="#707070" BorderThickness="1" CornerRadius="8" Margin="20,10,0,-4" Padding="10,0,10,0" VerticalAlignment="Bottom" Background="#EFEFEF">
                                             <TextBlock
-                                                Text="{x:Bind Language}"
+                                                Text="{x:Bind language}"
                                                 VerticalAlignment="Bottom"
                                                 Foreground="Black" />
                                         </Border>
                                     </InlineUIContainer>
                                 </Paragraph>
                             </RichTextBlock>
-                            
+
                         </StackPanel>
                     </Border>
                 </DataTemplate>
@@ -142,6 +143,7 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
+        <Button Content="Search" Margin="972,52,0,0" VerticalAlignment="Top" Foreground="Black" BorderBrush="Black" Click="Button_Click"/>
 
     </Grid>
 </Page>

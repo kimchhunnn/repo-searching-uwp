@@ -12,14 +12,11 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+using System.Diagnostics;
+using Newtonsoft;
 
 namespace repo_searching_uwp
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainPage : Page
     {
         public MainPage()
@@ -29,35 +26,72 @@ namespace repo_searching_uwp
             TextBlock emptyMessageTextBLock = this.FindName("EmptyMsg") as TextBlock;
             emptyMessageTextBLock.Visibility = Visibility.Collapsed;
 
-            TextBlock resultMsg = this.FindName("ResultMsg") as TextBlock;
-            resultMsg.Text = "6 Results";
         }
 
-        public Repository[] Repositories { get; } =
-            new Repository[]
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            ("Apricot", "AAAAAAA", "React Calendar", 1622, "JavaScript"),
-            ("Banana", "BBBBBB", "React Calendar", 2000, "JavaScript"),
-            ("Cherry", "CCCCCC", "React Calendar", 2099, "JavaScript"),
-            ("Date Palm", "DDDDDD", "React Calendar", 1299, "JavaScript"),
-            ("Elephant Apple", "EEEEEE", "React Calendar", 210, "JavaScript"),
-            ("Elephant Apple", "EEEEEE", "React Calendar", 30, "JavaScript"),
-        };
+            Debug.WriteLine("Sending Request ... ");
+
+            //Create an HTTP client object
+            Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
+
+            //Add a user-agent header to the GET request. 
+            var headers = httpClient.DefaultRequestHeaders;
+
+            //The safe way to add a header value is to use the TryParseAdd method and verify the return value is true,
+            //especially if the header value is coming from user input.
+            string header = "ie";
+            if (!headers.UserAgent.TryParseAdd(header))
+            {
+                throw new Exception("Invalid header value: " + header);
+            }
+
+            header = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)";
+            if (!headers.UserAgent.TryParseAdd(header))
+            {
+                throw new Exception("Invalid header value: " + header);
+            }
+
+            Uri requestUri = new Uri("https://api.github.com/search/repositories?q=" + this.Keyword.Text);
+
+            //Send the GET request asynchronously and retrieve the response as a string.
+            Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+            string httpResponseBody = "";
+
+            try
+            {
+                //Send the GET request
+                httpResponse = await httpClient.GetAsync(requestUri);
+                httpResponse.EnsureSuccessStatusCode();
+                httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+
+                Result result = Newtonsoft.Json.JsonConvert.DeserializeObject<Result>(httpResponseBody);
+
+                this.ResultMsg.Text = result.items.Count() + " Results";
+                this.ResultList.ItemsSource = result.items;
+
+            }
+            catch (Exception ex)
+            {
+                httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
+            }
+
+        }
     }
 
-    public class Repository
+    public class Repo
     {
-        public string Name { get; set; }
-        public string HtmlUrl { get; set; }
-        public string Description { get; set; }
-        public int Stargazers { get; set; }
-        public string Language { get; set; }
+        public string full_name { get; set; }
+        public string html_url { get; set; }
+        public string description { get; set; }
+        public int stargazers_count { get; set; }
+        public string language { get; set; }
+    }
 
-
-
-        public static implicit operator Repository((string Name, string HtmlUrl, string Description, int Stargazers, string Language) info)
-        {
-            return new Repository { Name = info.Name, HtmlUrl = info.HtmlUrl, Description = info.Description, Stargazers = info.Stargazers, Language = info.Language };
-        }
+    public class Result
+    {
+        public int total_count { get; set; }
+        public bool incomplete_results { get; set; }
+        public Repo[] items { get; set; }
     }
 }
