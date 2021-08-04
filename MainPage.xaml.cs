@@ -66,11 +66,15 @@ namespace repo_searching_uwp
                 }
                 else if (!result.Items.Count().Equals(0) && result.Items.Count() < result.TotalCount)
                 {
+                    this.EmptyMsg.Visibility = Visibility.Collapsed;
+                    this.ResultList.Visibility = Visibility.Visible;
                     this.ResultList.ItemsSource = result.Items;
                     this.ResultMsg.Text = "Top " + result.Items.Count() + " Results out of " + result.TotalCount + " Results";
                 }
                 else
                 {
+                    this.EmptyMsg.Visibility = Visibility.Collapsed;
+                    this.ResultList.Visibility = Visibility.Visible;
                     this.ResultList.ItemsSource = result.Items;
                     this.ResultMsg.Text = result.Items.Count() + " Results";
                 }
