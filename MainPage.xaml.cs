@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Diagnostics;
-using Newtonsoft;
+using Newtonsoft.Json;
 
 namespace repo_searching_uwp
 {
@@ -28,18 +28,13 @@ namespace repo_searching_uwp
 
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Sending Request ... ");
 
-            //Create an HTTP client object
             Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
 
-            //Add a user-agent header to the GET request. 
             var headers = httpClient.DefaultRequestHeaders;
-
-            //The safe way to add a header value is to use the TryParseAdd method and verify the return value is true,
-            //especially if the header value is coming from user input.
             string header = "ie";
             if (!headers.UserAgent.TryParseAdd(header))
             {
@@ -54,7 +49,6 @@ namespace repo_searching_uwp
 
             Uri requestUri = new Uri("https://api.github.com/search/repositories?q=" + this.Keyword.Text);
 
-            //Send the GET request asynchronously and retrieve the response as a string.
             Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
             string httpResponseBody = "";
 
@@ -67,8 +61,8 @@ namespace repo_searching_uwp
 
                 Result result = Newtonsoft.Json.JsonConvert.DeserializeObject<Result>(httpResponseBody);
 
-                this.ResultMsg.Text = result.items.Count() + " Results";
-                this.ResultList.ItemsSource = result.items;
+                this.ResultMsg.Text = result.Items.Count() + " Results";
+                this.ResultList.ItemsSource = result.Items;
 
             }
             catch (Exception ex)
@@ -81,17 +75,28 @@ namespace repo_searching_uwp
 
     public class Repo
     {
-        public string full_name { get; set; }
-        public string html_url { get; set; }
-        public string description { get; set; }
-        public int stargazers_count { get; set; }
-        public string language { get; set; }
+        [JsonProperty("full_name")]
+        public string FullName { get; set; }
+
+        [JsonProperty("html_url")]
+        public string HtmlUrl { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
+        [JsonProperty("stargazers_count")]
+        public int StargazersCount { get; set; }
+
+        [JsonProperty("language")]
+        public string Language { get; set; }
     }
 
     public class Result
     {
-        public int total_count { get; set; }
-        public bool incomplete_results { get; set; }
-        public Repo[] items { get; set; }
+        [JsonProperty("total_count")]
+        public int TotalCount { get; set; }
+
+        [JsonProperty("items")]
+        public Repo[] Items { get; set; }
     }
 }
