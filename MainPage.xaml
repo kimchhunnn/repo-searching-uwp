@@ -56,7 +56,8 @@
                 </TextBox>
             </StackPanel>
         </Border>
-
+        
+        <!--Search Button-->
         <Button
             Content="Search" 
             Margin="0,100,157,0"
@@ -84,16 +85,18 @@
             HorizontalAlignment="Left"
             Margin="157,160,157,0"
             Padding="10,0,0,0"
-            Text=""
+            Text="0 Result"
             TextWrapping="Wrap"
             VerticalAlignment="Top"
+            FontSize="18"
             Height="26" />
 
         <!-- Empty Result Message -->
         <TextBlock
             HorizontalAlignment="Center"
+            Visibility="Collapsed"
             x:Name="EmptyMsg"
-            Margin="0,185,0,0"
+            Margin="0,190,0,0"
             Text="Sorry, there is no repository match your searching."
             TextWrapping="Wrap"
             HorizontalTextAlignment="Center"
@@ -101,9 +104,9 @@
             Width="1187" Height="26" />
 
         <!-- Result List -->
-        <ListView x:Name="ResultList" Margin="157,185,157,49" Visibility="Visible" HorizontalAlignment="Center" Padding="0" >
+        <ListView x:Name="ResultList" Margin="157,190,157,49" Visibility="Visible" HorizontalAlignment="Stretch" Padding="0" >
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="local:Repo">
+                <DataTemplate >
                     <Border BorderBrush="#FF000000" BorderThickness="1" CornerRadius="4" Margin="0,5,0,5">
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,8,10,5">
                             <Grid>
@@ -122,10 +125,10 @@
                                     Margin="5,0,0,3"
                                     Grid.Column="1"
                                     VerticalAlignment="Bottom"
-                                    Text="{x:Bind FullName}" />
+                                    Text="{Binding FullName}" />
 
                             </Grid>
-                            <TextBlock Text="{x:Bind Description}" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                             <RichTextBlock Margin="0,2,0,5">
                                 <Paragraph>
                                     <InlineUIContainer>
@@ -135,7 +138,7 @@
                                                     <Image Source="Assets/star.png" Height="15" Width="15"/>
                                                 </InlineUIContainer>
                                                 <InlineUIContainer>
-                                                    <TextBlock Text="{x:Bind StargazersCount }" VerticalAlignment="Center" />
+                                                    <TextBlock Text="{Binding StargazersCount }" VerticalAlignment="Center" />
                                                 </InlineUIContainer>
                                             </Paragraph>
                                         </RichTextBlock>
@@ -143,7 +146,7 @@
                                     <InlineUIContainer >
                                         <Border CornerRadius="8" Margin="20,10,0,-4" Padding="12,0,12,0" VerticalAlignment="Bottom" Background="Teal">
                                             <TextBlock
-                                                Text="{x:Bind Language}"
+                                                Text="{Binding Language}"
                                                 VerticalAlignment="Bottom"
                                                 Foreground="White" />
                                         </Border>

@@ -14,6 +14,11 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
+using Windows.UI.Popups;
+
+using static repo_searching_uwp.Helper.HttpRequest;
+using repo_searching_uwp.Model;
 
 namespace repo_searching_uwp
 {
@@ -22,81 +27,67 @@ namespace repo_searching_uwp
         public MainPage()
         {
             this.InitializeComponent();
-
-            TextBlock emptyMessageTextBLock = this.FindName("EmptyMsg") as TextBlock;
-            emptyMessageTextBLock.Visibility = Visibility.Collapsed;
-
         }
 
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Sending Request ... ");
 
-            Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
-
-            var headers = httpClient.DefaultRequestHeaders;
-            string header = "ie";
-            if (!headers.UserAgent.TryParseAdd(header))
+            string uri = "";
+            if (this.Keyword.Text.Length > 0)
             {
-                throw new Exception("Invalid header value: " + header);
+                uri = "https://api.github.com/search/repositories?q=" + this.Keyword.Text;
+            }
+            else
+            {
+                this.ResultList.ItemsSource = new List<Repo>();
+                this.ResultMsg.Text = "0 Result";
+                return;
             }
 
-            header = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)";
-            if (!headers.UserAgent.TryParseAdd(header))
-            {
-                throw new Exception("Invalid header value: " + header);
-            }
 
-            Uri requestUri = new Uri("https://api.github.com/search/repositories?q=" + this.Keyword.Text);
 
-            Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
-            string httpResponseBody = "";
+            string response = await HttpGetRequest(uri);
 
             try
             {
-                //Send the GET request
-                httpResponse = await httpClient.GetAsync(requestUri);
-                httpResponse.EnsureSuccessStatusCode();
-                httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
 
-                Result result = Newtonsoft.Json.JsonConvert.DeserializeObject<Result>(httpResponseBody);
+                Result result = Newtonsoft.Json.JsonConvert.DeserializeObject<Result>(response);
+
+                Debug.WriteLine(result);
 
                 this.ResultMsg.Text = result.Items.Count() + " Results";
                 this.ResultList.ItemsSource = result.Items;
 
+                if (result.Items.Count().Equals(0))
+                {
+                    this.EmptyMsg.Visibility = Visibility.Visible;
+                    this.ResultList.Visibility = Visibility.Collapsed;
+                }
+                else if (!result.Items.Count().Equals(0) && result.Items.Count() < result.TotalCount)
+                {
+                    this.ResultList.ItemsSource = result.Items;
+                    this.ResultMsg.Text = "Top " + result.Items.Count() + " Results out of " + result.TotalCount + " Results";
+                }
+                else
+                {
+                    this.ResultList.ItemsSource = result.Items;
+                    this.ResultMsg.Text = result.Items.Count() + " Results";
+                }
             }
-            catch (Exception ex)
+            catch (Exception err)
             {
-                httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
+                ErrorResponse errorResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(response);
+
+                string errMsg = errorResponse.Errors.Length > 0 ? errorResponse.Errors[0].Message : err.Message;
+                string title = errorResponse.Message.Count() > 1 ? errorResponse.Message : "Technical Error";
+
+                var dialog = new MessageDialog( errMsg , title);
+
+                dialog.Commands.Add(new UICommand("Ok"));
+
+                var result = await dialog.ShowAsync();
             }
-
         }
-    }
-
-    public class Repo
-    {
-        [JsonProperty("full_name")]
-        public string FullName { get; set; }
-
-        [JsonProperty("html_url")]
-        public string HtmlUrl { get; set; }
-
-        [JsonProperty("description")]
-        public string Description { get; set; }
-
-        [JsonProperty("stargazers_count")]
-        public int StargazersCount { get; set; }
-
-        [JsonProperty("language")]
-        public string Language { get; set; }
-    }
-
-    public class Result
-    {
-        [JsonProperty("total_count")]
-        public int TotalCount { get; set; }
-
-        [JsonProperty("items")]
-        public Repo[] Items { get; set; }
     }
 }
