@@ -27,8 +27,7 @@
             BorderThickness="0"
             VerticalAlignment="Top"
             CornerRadius="5"
-            Margin="0,100,0,0"
-            Width="1187" Height="46"
+            Margin="157,100,265,0" Height="46"
             Background="#EFEFEF" >
 
             <StackPanel Orientation="Horizontal">
@@ -38,7 +37,7 @@
                     x:Name="Keyword"
                     BorderThickness="0"
                     PlaceholderText="Enter a keyword here ... "
-                    Width="1139" Height="46"
+                    Width="1037" Height="46"
                     Background="#EFEFEF"
                     Foreground="Black"
                     PlaceholderForeground="#707070"
@@ -52,20 +51,42 @@
                         <SolidColorBrush x:Key="TextControlForegroundFocused" Color="Black"/>
                         <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="Transparent"/>
                         <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="Transparent"/>
+                        <SolidColorBrush x:Key="TextControlForegroundPointerOver" Color="Black"/>
                     </TextBox.Resources>
                 </TextBox>
             </StackPanel>
         </Border>
 
+        <Button
+            Content="Search" 
+            Margin="0,100,157,0"
+            VerticalAlignment="Top"
+            CornerRadius="5"
+            Foreground="Teal"
+            FontWeight="Medium"
+            BorderThickness="1"
+            BorderBrush="Teal"
+            Background="White"
+            HorizontalAlignment="Right"
+            Click="SearchButton_Click" 
+            Width="102" Height="46">
+
+            <Button.Resources>
+                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Teal"/>
+                <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="White"/>
+                <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="Teal"/>
+            </Button.Resources>
+        </Button>
+
         <!-- Result Message -->
         <TextBlock
             x:Name="ResultMsg"
-            HorizontalAlignment="Center"
-            Margin="0,160,0,0"
+            HorizontalAlignment="Left"
+            Margin="157,160,157,0"
+            Padding="10,0,0,0"
             Text=""
             TextWrapping="Wrap"
             VerticalAlignment="Top"
-            Width="1187"
             Height="26" />
 
         <!-- Empty Result Message -->
@@ -80,11 +101,11 @@
             Width="1187" Height="26" />
 
         <!-- Result List -->
-        <ListView x:Name="ResultList" Margin="0,185,0,49" Visibility="Visible" HorizontalAlignment="Center" Width="1207 " Padding="0">
+        <ListView x:Name="ResultList" Margin="157,185,157,49" Visibility="Visible" HorizontalAlignment="Center" Padding="0" >
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="local:Repo">
                     <Border BorderBrush="#FF000000" BorderThickness="1" CornerRadius="4" Margin="0,5,0,5">
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,8,0,5">
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,8,10,5">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="20"/>
@@ -101,10 +122,10 @@
                                     Margin="5,0,0,3"
                                     Grid.Column="1"
                                     VerticalAlignment="Bottom"
-                                    Text="{x:Bind full_name}" />
+                                    Text="{x:Bind FullName}" />
 
                             </Grid>
-                            <TextBlock Text="{x:Bind description}" />
+                            <TextBlock Text="{x:Bind Description}" TextWrapping="Wrap" />
                             <RichTextBlock Margin="0,2,0,5">
                                 <Paragraph>
                                     <InlineUIContainer>
@@ -114,17 +135,17 @@
                                                     <Image Source="Assets/star.png" Height="15" Width="15"/>
                                                 </InlineUIContainer>
                                                 <InlineUIContainer>
-                                                    <TextBlock Text="{x:Bind stargazers_count.ToString() }" VerticalAlignment="Center" />
+                                                    <TextBlock Text="{x:Bind StargazersCount }" VerticalAlignment="Center" />
                                                 </InlineUIContainer>
                                             </Paragraph>
                                         </RichTextBlock>
                                     </InlineUIContainer>
                                     <InlineUIContainer >
-                                        <Border BorderBrush="#707070" BorderThickness="1" CornerRadius="8" Margin="20,10,0,-4" Padding="10,0,10,0" VerticalAlignment="Bottom" Background="#EFEFEF">
+                                        <Border CornerRadius="8" Margin="20,10,0,-4" Padding="12,0,12,0" VerticalAlignment="Bottom" Background="Teal">
                                             <TextBlock
-                                                Text="{x:Bind language}"
+                                                Text="{x:Bind Language}"
                                                 VerticalAlignment="Bottom"
-                                                Foreground="Black" />
+                                                Foreground="White" />
                                         </Border>
                                     </InlineUIContainer>
                                 </Paragraph>
@@ -143,7 +164,6 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <Button Content="Search" Margin="972,52,0,0" VerticalAlignment="Top" Foreground="Black" BorderBrush="Black" Click="Button_Click"/>
 
     </Grid>
 </Page>
