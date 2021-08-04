@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Windows.UI.Popups;
 
 using static repo_searching_uwp.Helper.HttpRequest;
+using static repo_searching_uwp.Helper.Dialog;
 using repo_searching_uwp.Model;
 
 namespace repo_searching_uwp
@@ -36,7 +37,8 @@ namespace repo_searching_uwp
             string uri = "";
             if (this.Keyword.Text.Length > 0)
             {
-                uri = "https://api.github.com/search/repositories?q=" + (this.Keyword.Text.Contains('%') ? this.Keyword.Text.Replace("%", "%25") : this.Keyword.Text);
+                string searchKeyword = this.Keyword.Text.Contains('%') ? this.Keyword.Text.Replace("%", "%25") : this.Keyword.Text; // Replace % with unicode
+                uri = "https://api.github.com/search/repositories?q=" + searchKeyword;
             }
             else
             {
@@ -46,51 +48,59 @@ namespace repo_searching_uwp
             }
 
 
-
-            string response = await HttpGetRequest(uri);
-
             try
             {
-
-                Result result = Newtonsoft.Json.JsonConvert.DeserializeObject<Result>(response);
-
-                Debug.WriteLine(result);
-
-                this.ResultMsg.Text = result.Items.Count() + " Results";
-                this.ResultList.ItemsSource = result.Items;
-
-                if (result.Items.Count().Equals(0))
+                Windows.Web.Http.HttpResponseMessage response;
+                response = await HttpGetRequest(uri);
+                if (response.Content == null)
                 {
-                    this.EmptyMsg.Visibility = Visibility.Visible;
-                    this.ResultList.Visibility = Visibility.Collapsed;
+                    throw new Exception();
                 }
-                else if (!result.Items.Count().Equals(0) && result.Items.Count() < result.TotalCount)
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
                 {
-                    this.EmptyMsg.Visibility = Visibility.Collapsed;
-                    this.ResultList.Visibility = Visibility.Visible;
-                    this.ResultList.ItemsSource = result.Items;
-                    this.ResultMsg.Text = "Top " + result.Items.Count() + " Results out of " + result.TotalCount + " Results";
-                }
-                else
-                {
-                    this.EmptyMsg.Visibility = Visibility.Collapsed;
-                    this.ResultList.Visibility = Visibility.Visible;
-                    this.ResultList.ItemsSource = result.Items;
+                    Result result = Newtonsoft.Json.JsonConvert.DeserializeObject<Result>(responseBody);
+
+                    Debug.WriteLine(result);
+
                     this.ResultMsg.Text = result.Items.Count() + " Results";
+                    this.ResultList.ItemsSource = result.Items;
+
+                    if (result.Items.Count().Equals(0))
+                    {
+                        this.EmptyMsg.Visibility = Visibility.Visible;
+                        this.ResultList.Visibility = Visibility.Collapsed;
+                    }
+                    else if (!result.Items.Count().Equals(0) && result.Items.Count() < result.TotalCount)
+                    {
+                        this.EmptyMsg.Visibility = Visibility.Collapsed;
+                        this.ResultList.Visibility = Visibility.Visible;
+                        this.ResultList.ItemsSource = result.Items;
+                        this.ResultMsg.Text = "Top " + result.Items.Count() + " Results out of " + result.TotalCount + " Results";
+                    }
+                    else
+                    {
+                        this.EmptyMsg.Visibility = Visibility.Collapsed;
+                        this.ResultList.Visibility = Visibility.Visible;
+                        this.ResultList.ItemsSource = result.Items;
+                        this.ResultMsg.Text = result.Items.Count() + " Results";
+                    }
+
+                } else
+                {
+                    ErrorResponse errorResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseBody);
+
+                    string errMsg = errorResponse.Errors[0].Message;
+                    string title = errorResponse.Message;
+
+                    ShowErrorDialog(title, errMsg);
                 }
             }
             catch (Exception err)
             {
-                ErrorResponse errorResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(response);
-
-                string errMsg = errorResponse.Errors.Length > 0 ? errorResponse.Errors[0].Message : err.Message;
-                string title = errorResponse.Message.Count() > 1 ? errorResponse.Message : "Technical Error";
-
-                var dialog = new MessageDialog( errMsg , title);
-
-                dialog.Commands.Add(new UICommand("Ok"));
-
-                var result = await dialog.ShowAsync();
+                ShowErrorDialog("Technical Issue", err.Message);
             }
         }
     }

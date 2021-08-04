@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 
 namespace repo_searching_uwp.Model
 {
-    //{"message":"Validation Failed","errors":[{"message":"None of the search qualifiers apply to this search type.","resource":"Search","field":"q","code":"invalid"}],"documentation_url":"https://docs.github.com/v3/search/"}
 
     class Errors
     {

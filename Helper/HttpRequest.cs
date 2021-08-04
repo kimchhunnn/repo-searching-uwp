@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace repo_searching_uwp.Helper
 {
     public static class HttpRequest
     {
-        public static async Task<string> HttpGetRequest(string uri)
+        public static async Task<Windows.Web.Http.HttpResponseMessage> HttpGetRequest(string uri)
         {
 
             Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
@@ -29,20 +30,11 @@ namespace repo_searching_uwp.Helper
             Uri requestUri = new Uri(uri);
 
             Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
-            string httpResponseBody = "";
 
-            try
-            {
-                //Send the GET request
-                httpResponse = await httpClient.GetAsync(requestUri);
-                httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+            //Send the GET request
+            httpResponse = await httpClient.GetAsync(requestUri);
 
-            }
-            catch (Exception ex)
-            {
-                httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
-            }
-            return httpResponseBody;
+            return httpResponse;
         }
     }
 }
