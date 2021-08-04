@@ -40,8 +40,7 @@ namespace repo_searching_uwp.Helper
             }
             catch (Exception ex)
             {
-
-                string aa = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
+                httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
             }
             return httpResponseBody;
         }
