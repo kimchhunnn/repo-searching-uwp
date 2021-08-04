@@ -36,7 +36,7 @@ namespace repo_searching_uwp
             string uri = "";
             if (this.Keyword.Text.Length > 0)
             {
-                uri = "https://api.github.com/search/repositories?q=" + this.Keyword.Text;
+                uri = "https://api.github.com/search/repositories?q=" + (this.Keyword.Text.Contains('%') ? this.Keyword.Text.Replace("%", "%25") : this.Keyword.Text);
             }
             else
             {
