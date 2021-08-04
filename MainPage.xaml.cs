@@ -52,10 +52,6 @@ namespace repo_searching_uwp
             {
                 Windows.Web.Http.HttpResponseMessage response;
                 response = await HttpGetRequest(uri);
-                if (response.Content == null)
-                {
-                    throw new Exception();
-                }
 
                 string responseBody = await response.Content.ReadAsStringAsync();
 
@@ -63,15 +59,12 @@ namespace repo_searching_uwp
                 {
                     Result result = Newtonsoft.Json.JsonConvert.DeserializeObject<Result>(responseBody);
 
-                    Debug.WriteLine(result);
-
-                    this.ResultMsg.Text = result.Items.Count() + " Results";
-                    this.ResultList.ItemsSource = result.Items;
-
                     if (result.Items.Count().Equals(0))
                     {
                         this.EmptyMsg.Visibility = Visibility.Visible;
                         this.ResultList.Visibility = Visibility.Collapsed;
+                        this.ResultMsg.Text = result.Items.Count() + " Result";
+                        this.ResultList.ItemsSource = result.Items;
                     }
                     else if (!result.Items.Count().Equals(0) && result.Items.Count() < result.TotalCount)
                     {
