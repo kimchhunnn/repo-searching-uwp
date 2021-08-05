@@ -47,12 +47,11 @@ namespace repo_searching_uwp
                 return;
             }
 
+            Windows.Web.Http.HttpResponseMessage response;
+            response = await HttpGetRequest(uri);
 
             try
             {
-                Windows.Web.Http.HttpResponseMessage response;
-                response = await HttpGetRequest(uri);
-
                 string responseBody = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
@@ -94,6 +93,10 @@ namespace repo_searching_uwp
             catch (Exception err)
             {
                 ShowErrorDialog("Technical Issue", err.Message);
+            }
+            finally
+            {
+                response.Dispose();
             }
         }
     }
