@@ -6,9 +6,167 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="White"
+    Foreground="Black"
+   >
 
     <Grid>
+        <!-- Header -->
+        <TextBlock
+            HorizontalAlignment="Center"
+            Margin="0,48,0,0"
+            Text="GitHub Repository Search"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            FontSize="30" Height="45"
+            FontWeight="Bold"
+            Foreground="DimGray" />
+
+        <!-- Search Box -->
+        <Border
+            BorderThickness="0"
+            VerticalAlignment="Top"
+            CornerRadius="5"
+            Margin="157,100,265,0" Height="46"
+            Background="#EFEFEF" >
+
+            <StackPanel Orientation="Horizontal">
+                <Image Source="Assets/icon-search.svg" Margin="15,0,15,0" Width="15" Height="15" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                <TextBox 
+                    Text=""
+                    x:Name="Keyword"
+                    BorderThickness="0"
+                    PlaceholderText="Enter a keyword here ... "
+                    Width="1037" Height="46"
+                    Background="#EFEFEF"
+                    Foreground="Black"
+                    PlaceholderForeground="#707070"
+                    Padding="15,12,10,10"
+                    FontSize="16"
+                    VerticalContentAlignment="Center"
+                    TextWrapping="Wrap" >
+
+                    <TextBox.Resources>
+                        <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="Transparent"/>
+                        <SolidColorBrush x:Key="TextControlForegroundFocused" Color="Black"/>
+                        <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="Transparent"/>
+                        <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="Transparent"/>
+                        <SolidColorBrush x:Key="TextControlForegroundPointerOver" Color="Black"/>
+                    </TextBox.Resources>
+                </TextBox>
+            </StackPanel>
+        </Border>
+        
+        <!--Search Button-->
+        <Button
+            Content="Search" 
+            Margin="0,100,157,0"
+            VerticalAlignment="Top"
+            CornerRadius="5"
+            Foreground="Teal"
+            FontWeight="Medium"
+            BorderThickness="1"
+            BorderBrush="Teal"
+            Background="White"
+            HorizontalAlignment="Right"
+            Click="SearchButton_Click" 
+            Width="102" Height="46">
+
+            <Button.Resources>
+                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Teal"/>
+                <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="White"/>
+                <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="Teal"/>
+            </Button.Resources>
+        </Button>
+
+        <!-- Result Message -->
+        <TextBlock
+            x:Name="ResultMsg"
+            HorizontalAlignment="Left"
+            Margin="157,160,157,0"
+            Padding="10,0,0,0"
+            Text="0 Result"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            FontSize="18"
+            Height="26" />
+
+        <!-- Empty Result Message -->
+        <TextBlock
+            HorizontalAlignment="Center"
+            Visibility="Collapsed"
+            x:Name="EmptyMsg"
+            Margin="0,190,0,0"
+            Text="Sorry, there is no repository match your searching."
+            TextWrapping="Wrap"
+            HorizontalTextAlignment="Center"
+            VerticalAlignment="Top"
+            Width="1187" Height="26" />
+
+        <!-- Result List -->
+        <ListView x:Name="ResultList" Margin="157,190,157,49" Visibility="Visible" HorizontalAlignment="Stretch" Padding="0" >
+            <ListView.ItemTemplate>
+                <DataTemplate >
+                    <Border BorderBrush="#FF000000" BorderThickness="1" CornerRadius="4" Margin="0,5,0,5">
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,8,10,5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Image
+                                    Source="Assets/icon-folder.svg"
+                                    Margin="0,-3,0,0"
+                                    Width="15" Height="15"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center" />
+
+                                <TextBlock
+                                    Margin="5,0,0,3"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Bottom"
+                                    Text="{Binding FullName}" />
+
+                            </Grid>
+                            <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                            <RichTextBlock Margin="0,2,0,5">
+                                <Paragraph>
+                                    <InlineUIContainer>
+                                        <RichTextBlock >
+                                            <Paragraph>
+                                                <InlineUIContainer>
+                                                    <Image Source="Assets/star.png" Height="15" Width="15"/>
+                                                </InlineUIContainer>
+                                                <InlineUIContainer>
+                                                    <TextBlock Text="{Binding StargazersCount }" VerticalAlignment="Center" />
+                                                </InlineUIContainer>
+                                            </Paragraph>
+                                        </RichTextBlock>
+                                    </InlineUIContainer>
+                                    <InlineUIContainer >
+                                        <Border CornerRadius="8" Margin="20,10,0,-4" Padding="12,0,12,0" VerticalAlignment="Bottom" Background="Teal">
+                                            <TextBlock
+                                                Text="{Binding Language}"
+                                                VerticalAlignment="Bottom"
+                                                Foreground="White" />
+                                        </Border>
+                                    </InlineUIContainer>
+                                </Paragraph>
+                            </RichTextBlock>
+
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="IsHitTestVisible" Value="false"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="FontSize" Value="14"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
 
     </Grid>
 </Page>
