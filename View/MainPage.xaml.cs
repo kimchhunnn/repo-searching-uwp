@@ -20,6 +20,7 @@ using Windows.UI.Popups;
 using static repo_searching_uwp.Helper.HttpRequest;
 using static repo_searching_uwp.Helper.Dialog;
 using repo_searching_uwp.Model;
+using static repo_searching_uwp.Data.GitHubSearchStore;
 
 namespace repo_searching_uwp
 {
@@ -32,13 +33,11 @@ namespace repo_searching_uwp
 
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("Sending Request ... ");
 
-            string uri = "";
+            string uri;
             if (this.Keyword.Text.Length > 0)
             {
-                string searchKeyword = this.Keyword.Text.Contains('%') ? this.Keyword.Text.Replace("%", "%25") : this.Keyword.Text; // Replace % with unicode
-                uri = "https://api.github.com/search/repositories?q=" + searchKeyword;
+                uri = this.Keyword.Text.Contains('%') ? this.Keyword.Text.Replace("%", "%25") : this.Keyword.Text; // Replace % with unicode
             }
             else
             {
@@ -47,16 +46,13 @@ namespace repo_searching_uwp
                 return;
             }
 
-            Windows.Web.Http.HttpResponseMessage response;
-            response = await HttpGetRequest(uri);
-
             try
             {
-                string responseBody = await response.Content.ReadAsStringAsync();
+                object response = await SearchRepo(uri);
 
-                if (response.IsSuccessStatusCode)
+                if ( response.GetType().Equals(typeof(Result)) )
                 {
-                    Result result = Newtonsoft.Json.JsonConvert.DeserializeObject<Result>(responseBody);
+                    Result result = (Result)response;
 
                     if (result.Items.Count().Equals(0))
                     {
@@ -80,9 +76,9 @@ namespace repo_searching_uwp
                         this.ResultMsg.Text = result.Items.Count() + " Results";
                     }
 
-                } else
+                } else if ( response.GetType().Equals(typeof(ErrorResponse)))
                 {
-                    ErrorResponse errorResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseBody);
+                    ErrorResponse errorResponse = (ErrorResponse)response;
 
                     string errMsg = errorResponse.Errors[0].Message;
                     string title = errorResponse.Message;
@@ -93,10 +89,6 @@ namespace repo_searching_uwp
             catch (Exception err)
             {
                 ShowErrorDialog("Technical Issue", err.Message);
-            }
-            finally
-            {
-                response.Dispose();
             }
         }
     }

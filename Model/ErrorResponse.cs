@@ -8,13 +8,13 @@ using Newtonsoft.Json;
 namespace repo_searching_uwp.Model
 {
 
-    class Errors
+    public class Errors
     {
         [JsonProperty("message")]
         public string Message { get; set; }
     }
 
-    class ErrorResponse
+    public class ErrorResponse
     {
         [JsonProperty("message")]
         public string Message { get; set; }

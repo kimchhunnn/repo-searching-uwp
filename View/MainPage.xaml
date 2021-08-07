@@ -31,7 +31,7 @@
             Background="#EFEFEF" >
 
             <StackPanel Orientation="Horizontal">
-                <Image Source="Assets/icon-search.svg" Margin="15,0,15,0" Width="15" Height="15" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                <Image Source="../Assets/icon-search.svg" Margin="15,0,15,0" Width="15" Height="15" HorizontalAlignment="Left" VerticalAlignment="Center" />
                 <TextBox 
                     Text=""
                     x:Name="Keyword"
@@ -115,7 +115,7 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <Image
-                                    Source="Assets/icon-folder.svg"
+                                    Source="../Assets/icon-folder.svg"
                                     Margin="0,-3,0,0"
                                     Width="15" Height="15"
                                     HorizontalAlignment="Left"
@@ -135,7 +135,7 @@
                                         <RichTextBlock >
                                             <Paragraph>
                                                 <InlineUIContainer>
-                                                    <Image Source="Assets/star.png" Height="15" Width="15"/>
+                                                    <Image Source="../Assets/star.png" Height="15" Width="15"/>
                                                 </InlineUIContainer>
                                                 <InlineUIContainer>
                                                     <TextBlock Text="{Binding StargazersCount }" VerticalAlignment="Center" />
